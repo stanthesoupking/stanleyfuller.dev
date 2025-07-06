@@ -155,7 +155,8 @@ site := Site {
                     date = { 17, .January, 2025 },
                     location = "Mount Nelson, Tasmania",
                     alt_text = "Cat at window.",
-                    species = .Crumpet
+                    species = .Crumpet,
+                    film_stock = "Kodak Gold 200"
                 },
                 {
                     path = "public/photos/DSC04490.jpg",
