@@ -150,14 +150,14 @@ site := Site {
             name = "Landscape",
             photos = {
                 {
-                    path = "public/photos/IMG_5076.jpg",
+                    path = "public/photos/IMG_5078.jpg",
                     date = { 23, .August, 2024 },
                     location = "The Needles, Tasmania",
                     alt_text = "Mountains with sun peeking through clouds.",
                     film_stock = "Kodak Gold 200"
                 },
                 {
-                    path = "public/photos/IMG_5077.jpg",
+                    path = "public/photos/IMG_5079.jpg",
                     date = { 23, .August, 2024 },
                     location = "The Needles, Tasmania",
                     alt_text = "Mountains with sun peeking through clouds.",
