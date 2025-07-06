@@ -22,6 +22,7 @@ Species :: enum {
     None,
     Scarlet_Robin,
     Grey_Currawong,
+    Crumpet,
     Wombat
 }
 
@@ -30,6 +31,7 @@ species_get_name :: proc(v: Species) -> string {
         case .None: return ""
         case .Scarlet_Robin: return "Scarlet Robin"
         case .Grey_Currawong: return "Grey Currawong"
+        case .Crumpet: return "Crumpet"
         case .Wombat: return "Wombat"
     }
     return "?"
@@ -40,6 +42,7 @@ species_get_latin_name :: proc(v: Species) -> string {
         case .None: return ""
         case .Scarlet_Robin: return "Petroica Boodang"
         case .Grey_Currawong: return "Strepera Versicolor"
+        case .Crumpet: return "Crumpet"
         case .Wombat: return "Vombatus Ursinus"
     }
     return "?"
@@ -146,6 +149,13 @@ site := Site {
                     location = "Mount Nelson, Tasmania",
                     alt_text = "A grey currawong perched on the branch of a gum tree.",
                     species = .Grey_Currawong
+                },
+                {
+                    path = "public/photos/IMG_5069.jpg",
+                    date = { 17, .January, 2025 },
+                    location = "Mount Nelson, Tasmania",
+                    alt_text = "Cat at window.",
+                    species = .Crumpet
                 },
                 {
                     path = "public/photos/DSC04490.jpg",
