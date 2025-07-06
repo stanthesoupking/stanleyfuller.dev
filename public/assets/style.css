@@ -16,6 +16,7 @@
 
 h1, h2, h3 {
   font-family: 'Outfit-Regular';
+  margin-bottom: 4pt;
 }
 
 p {
@@ -25,8 +26,6 @@ p {
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  /*grid-template-columns: repeat(auto-fill, 200px);*/
-  /*grid-auto-rows: 200px;*/
   gap: 3pt;
   margin: 0 auto;
 }
@@ -48,10 +47,11 @@ p {
 }
 
 .image-wrapper {
-  height: calc(100vh - 110pt);
-  width: calc(100vw - 40pt);
+  height: calc(100dvh - 120pt);
+  width: calc(100dvw - 30pt);
   display: block;
-  padding: 20pt;
+  padding: 15pt;
+  padding-top: 35pt;
 }
 
 .image-view {
@@ -81,4 +81,57 @@ body {
   background-color: #e4cba6;
   padding: 0;
   margin: 0;
+}
+
+.prev-image-inner {
+  position: absolute;
+  left: 10pt;
+  top: 18pt;
+  transform: translateY(-50%);
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+.prev-image-inner:hover {
+  opacity: 0.5;
+}
+
+.next-image-inner {
+  position: absolute;
+  right: 10pt;
+  top: 18pt;
+  transform: translateY(-50%);
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+.next-image-inner:hover {
+  opacity: 0.5;
+}
+
+.home-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #2c2a26;
+  cursor: pointer;
+  font-weight: 1000;
+  font-family: 'Outfit-Regular';
+  text-decoration: none;
+}
+
+.image-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #2c2a26;
+  cursor: pointer;
+}
+
+.photo-readout {
+  position: absolute;
+  left: 50%;
+  top: 10pt;
+  margin: 0;
+  transform: translateX(-50%);
 }

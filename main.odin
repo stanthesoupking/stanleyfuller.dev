@@ -253,7 +253,9 @@ sanitize_path_component :: proc(src: string) -> string {
     return strings.to_lower(cpy)
 }
 
-gen_photo_page :: proc(ctx: ^Generator_Context, photo: ^Photo, output_path: string) {
+gen_photo_page :: proc(ctx: ^Generator_Context, album: ^Album, photo_index: int, output_path: string) {
+    photo := &album.photos[photo_index]
+
     fd := os.open(output_path, {.Write, .Create}) or_else panic("Failed to write photo page.")
     writer := os.to_writer(fd)
 
@@ -267,7 +269,7 @@ gen_photo_page :: proc(ctx: ^Generator_Context, photo: ^Photo, output_path: stri
     fmt.wprintln(writer, "<div class=\"image-information\">")
     fmt.wprintfln(writer, "<p>Location: {}</p>", photo.location)
     fmt.wprintfln(writer, "<p>Date: {}</p>", date_time_to_string(photo.date))
-    
+
     film_stock, has_film_stock := photo.film_stock.?
     if has_film_stock {
         fmt.wprintfln(writer, "<p>Film: {}</p>", film_stock)
@@ -278,6 +280,40 @@ gen_photo_page :: proc(ctx: ^Generator_Context, photo: ^Photo, output_path: stri
     }
 
     fmt.wprintln(writer, "</div>")
+
+    fmt.wprintfln(writer, `<p class="photo-readout"> {} - {} of {}</p>`, album.name, photo_index + 1, len(album.photos))
+
+    if photo_index > 0 {
+        text := `
+        <div class="prev-image-inner">
+        <a class="image-button" href="/albums/{}/{}.html">
+        <svg width="20" height="40" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="90,10 10,50 90,90" />
+        </svg>
+        </a>
+        </div>`
+        fmt.wprintfln(writer, text, sanitize_path_component(album.name), photo_index - 1)
+    } else {
+        text := `
+        <div class="prev-image-inner">
+        <a class="home-button" href="/index.html">
+        Home
+        </a>
+        </div>`
+        fmt.wprintfln(writer, text)
+    }
+
+    if photo_index + 1 < len(album.photos) {
+        text := `
+        <div class="next-image-inner">
+        <a class="image-button" href="/albums/{}/{}.html">
+        <svg width="20" height="40" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="10,10 90,50 10,90" />
+        </svg>
+        </a>
+        </div>`
+        fmt.wprintfln(writer, text, sanitize_path_component(album.name), photo_index + 1)
+    }
 
     fmt.wprintln(writer, "</body>")
     fmt.wprintln(writer, "</html>")
@@ -300,7 +336,7 @@ gen_photo_pages :: proc(ctx: ^Generator_Context) {
             buf: [16]byte
             photo_index_str := strconv.itoa(buf[:], photo_index)
             photo.page_path = strings.concatenate({album_path, "/", photo_index_str, ".html"})
-            gen_photo_page(ctx, &photo, photo.page_path.(string))
+            gen_photo_page(ctx, &album, photo_index, photo.page_path.(string))
 
             photo_index += 1
         }
