@@ -21,7 +21,8 @@ Site :: struct {
 Species :: enum {
     None,
     Scarlet_Robin,
-    Grey_Currawong
+    Grey_Currawong,
+    Wombat
 }
 
 species_get_name :: proc(v: Species) -> string {
@@ -29,6 +30,7 @@ species_get_name :: proc(v: Species) -> string {
         case .None: return ""
         case .Scarlet_Robin: return "Scarlet Robin"
         case .Grey_Currawong: return "Grey Currawong"
+        case .Wombat: return "Wombat"
     }
     return "?"
 }
@@ -38,6 +40,7 @@ species_get_latin_name :: proc(v: Species) -> string {
         case .None: return ""
         case .Scarlet_Robin: return "Petroica Boodang"
         case .Grey_Currawong: return "Strepera Versicolor"
+        case .Wombat: return "Vombatus Ursinus"
     }
     return "?"
 }
@@ -143,6 +146,13 @@ site := Site {
                     location = "Mount Nelson, Tasmania",
                     alt_text = "A grey currawong perched on the branch of a gum tree.",
                     species = .Grey_Currawong
+                },
+                {
+                    path = "public/photos/DSC04490.jpg",
+                    date = { 20, .March, 2024 },
+                    location = "Maria Island, Tasmania",
+                    alt_text = "Wombat.",
+                    species = .Wombat
                 },
             }
         },
