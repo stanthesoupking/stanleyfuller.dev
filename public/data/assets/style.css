@@ -1,0 +1,84 @@
+@font-face {
+    font-family: 'Outfit-Light';
+    src: url('Nunito-Light.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Outfit-Regular';
+    src: url('Nunito-Regular.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+h1, h2, h3 {
+  font-family: 'Outfit-Regular';
+}
+
+p {
+  font-family: 'Outfit-Regular';
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  /*grid-template-columns: repeat(auto-fill, 200px);*/
+  /*grid-auto-rows: 200px;*/
+  gap: 3pt;
+  margin: 0 auto;
+}
+
+.gallery img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 0pt;
+  padding: 0;
+}
+
+.gallery a {
+  display: inline-block; /* or block */
+  padding: 0;
+  margin: 0;
+  border: none;
+  line-height: 0;
+}
+
+.image-wrapper {
+  height: calc(100vh - 110pt);
+  width: calc(100vw - 40pt);
+  display: block;
+  padding: 20pt;
+}
+
+.image-view {
+  height: 100%;
+  width: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.image-information {
+  padding-left: 20pt;
+  padding-right: 20pt;
+}
+
+.image-information p {
+  margin: 0;
+  margin-bottom: 4pt;
+}
+
+.index-page {
+  padding-left: 20pt;
+  padding-right: 20pt;
+}
+
+body {
+  color: #2c2a26;
+  background-color: #e4cba6;
+  padding: 0;
+  margin: 0;
+}
