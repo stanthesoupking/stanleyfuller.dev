@@ -9,7 +9,7 @@ import "core:strings"
 import "core:math"
 import "core:strconv"
 import "core:encoding/uuid"
-import "core:crypto"
+import "core:crypto/sha2"
 import "core:io"
 
 THUMBNAIL_MAX_DIMENSION :: 768
@@ -117,28 +117,28 @@ site := Site {
             name = "Wildlife",
             photos = {
                 {
-                    path = "albums/wildlife/IMG_0997.jpg",
+                    path = "public/photos/IMG_0997.jpg",
                     date = { 5, .July, 2025 },
                     location = "Mount Nelson, Tasmania",
                     alt_text = "A scarlet robin perched on the branch of a gum tree.",
                     species = .Scarlet_Robin
                 },
                 {
-                    path = "albums/wildlife/IMG_1030.jpg",
+                    path = "public/photos/IMG_1030.jpg",
                     date = { 5, .July, 2025 },
                     location = "Mount Nelson, Tasmania",
                     alt_text = "A scarlet robin taking off from a branch.",
                     species = .Scarlet_Robin
                 },
                 {
-                    path = "albums/wildlife/IMG_1116.jpg",
+                    path = "public/photos/IMG_1116.jpg",
                     date = { 5, .July, 2025 },
                     location = "Mount Nelson, Tasmania",
                     alt_text = "A scarlet robin with a bug in mouth.",
                     species = .Scarlet_Robin
                 },
                 {
-                    path = "albums/wildlife/IMG_1073.jpg",
+                    path = "public/photos/IMG_1073.jpg",
                     date = { 5, .July, 2025 },
                     location = "Mount Nelson, Tasmania",
                     alt_text = "A grey currawong perched on the branch of a gum tree.",
@@ -150,14 +150,14 @@ site := Site {
             name = "Landscape",
             photos = {
                 {
-                    path = "albums/landscape/IMG_5076.JPG",
+                    path = "public/photos/IMG_5076.JPG",
                     date = { 23, .August, 2024 },
                     location = "The Needles, Tasmania",
                     alt_text = "Mountains with sun peeking through clouds.",
                     film_stock = "Kodak Gold 200"
                 },
                 {
-                    path = "albums/landscape/IMG_5077.JPG",
+                    path = "public/photos/IMG_5077.JPG",
                     date = { 23, .August, 2024 },
                     location = "The Needles, Tasmania",
                     alt_text = "Mountains with sun peeking through clouds.",
@@ -178,21 +178,27 @@ to_site_path :: proc(ctx: ^Generator_Context, path: string) -> string {
     return strings.concatenate({"/", sub})
 }
 
+to_last_component :: proc(path: string) -> string {
+    start := strings.last_index(path, "/")
+    end := strings.last_index(path, ".")
+    return path[start:end]
+}
+
 copy_photos :: proc(ctx: ^Generator_Context, output_path: string) {
     for &album in ctx.site.albums {
         for &photo in album.photos {
-            new_path := strings.concatenate({output_path, "/", uuid.to_string(uuid.generate_v7()), ".jpg"})
+            new_path := strings.concatenate({output_path, "/", to_last_component(photo.path), ".jpg"})
             os.copy_file(new_path, photo.path)
             photo.path = new_path
         }
     }
 }
 
-copy_assets :: proc(ctx: ^Generator_Context, output_path: string) {
-    os.copy_directory_all(output_path, "assets")
-}
+gen_thumbnails :: proc(ctx: ^Generator_Context) {
+    thumbnails_path := strings.concatenate({ctx.output_path, "/thumbnails"})
+    os.remove_all(thumbnails_path)
+    os.make_directory(thumbnails_path)
 
-gen_thumbnails :: proc(ctx: ^Generator_Context, output_path: string) {
     next_thumb_id := 0
     for &album in ctx.site.albums {
         for &photo in album.photos {
@@ -214,7 +220,7 @@ gen_thumbnails :: proc(ctx: ^Generator_Context, output_path: string) {
             thumb_id_str := strconv.itoa(itoa_buf[:], next_thumb_id)
             next_thumb_id += 1
 
-            thumb_path := strings.concatenate({output_path, "/", uuid.to_string(uuid.generate_v7()), ".jpg"})
+            thumb_path := strings.concatenate({thumbnails_path, "/", to_last_component(photo.path), "_thumbnail.jpg"})
             image.write_jpg(strings.clone_to_cstring(thumb_path), thumb_width, thumb_height, img_channels, raw_data(thumb_bytes), 90)
             photo.thumbnail_path = thumb_path
             photo.thumbnail_size = { int(thumb_width), int(thumb_height) }
@@ -226,7 +232,7 @@ write_page_head :: proc(ctx: ^Generator_Context, writer: io.Stream) {
     fmt.wprintln(writer, "<meta charset=\"UTF-8\">")
     fmt.wprintln(writer, "<head>")
     fmt.wprintln(writer, "<title>Stan's Website</title>")
-    fmt.wprintln(writer, "<link href=\"/data/assets/style.css\" rel=\"stylesheet\">")
+    fmt.wprintln(writer, "<link href=\"/assets/style.css\" rel=\"stylesheet\">")
     fmt.wprintln(writer, "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
     fmt.wprintln(writer, "</head>")
 }
@@ -272,6 +278,7 @@ gen_photo_page :: proc(ctx: ^Generator_Context, photo: ^Photo, output_path: stri
 
 gen_photo_pages :: proc(ctx: ^Generator_Context) {
     albums_path := strings.concatenate({ctx.output_path, "/albums"})
+    os.remove_all(albums_path)
     os.make_directory(albums_path)
 
     for &album in ctx.site.albums {
@@ -291,6 +298,7 @@ gen_photo_pages :: proc(ctx: ^Generator_Context) {
 }
 
 gen_index_page :: proc(ctx: ^Generator_Context, output_path: string) {
+    os.remove(output_path)
     fd := os.open(output_path, {.Write, .Create}) or_else panic("Failed to write index page.")
     writer := os.to_writer(fd)
 
@@ -321,22 +329,12 @@ gen_index_page :: proc(ctx: ^Generator_Context, output_path: string) {
 }
 
 gen_site :: proc(site: ^Site, output_path: string) {
-    context.random_generator = crypto.random_generator()
-
     ctx := Generator_Context {
         site = site,
         output_path = output_path
     }
 
-    os.remove_all(output_path)
-    os.make_directory(output_path)
-
-    data_path := strings.concatenate({output_path, "/data"})
-    os.make_directory(data_path)
-
-    copy_photos(&ctx, data_path)
-    copy_assets(&ctx, data_path)
-    gen_thumbnails(&ctx, data_path)
+    gen_thumbnails(&ctx)
     gen_photo_pages(&ctx)
     gen_index_page(&ctx, strings.concatenate({output_path, "/index.html"}))
 }
