@@ -23,7 +23,8 @@ Species :: enum {
     Scarlet_Robin,
     Grey_Currawong,
     Crumpet,
-    Wombat
+    Wombat,
+    RedDragonfly
 }
 
 species_get_name :: proc(v: Species) -> string {
@@ -33,6 +34,7 @@ species_get_name :: proc(v: Species) -> string {
         case .Grey_Currawong: return "Grey Currawong"
         case .Crumpet: return "Crumpet"
         case .Wombat: return "Wombat"
+        case .RedDragonfly: return "Autumn darter"
     }
     return "?"
 }
@@ -44,6 +46,7 @@ species_get_latin_name :: proc(v: Species) -> string {
         case .Grey_Currawong: return "Strepera Versicolor"
         case .Crumpet: return "Crumpet"
         case .Wombat: return "Vombatus Ursinus"
+        case .RedDragonfly: return "Sympetrum frequens"
     }
     return "?"
 }
@@ -151,6 +154,13 @@ site := Site {
                     species = .Grey_Currawong
                 },
                 {
+                    path = "public/photos/IMG_0841.jpg",
+                    date = { 21, .June, 2025 },
+                    location = "Rikugien Gardens, Tokyo",
+                    alt_text = "Red dragon fly on the butt of a turtle.",
+                    species = .RedDragonfly,
+                },
+                {
                     path = "public/photos/IMG_5069.jpg",
                     date = { 17, .January, 2025 },
                     location = "Mount Nelson, Tasmania",
@@ -183,6 +193,12 @@ site := Site {
                     location = "The Needles, Tasmania",
                     alt_text = "Mountains with sun peeking through clouds.",
                     film_stock = "Kodak Gold 200"
+                },
+                {
+                    path = "public/photos/IMG_4380.jpg",
+                    date = { 23, .August, 2024 },
+                    location = "The Needles, Tasmania",
+                    alt_text = "A biblical moment featuring a circular rainbow with the silhouette of a man.",
                 },
             }
         }
@@ -287,7 +303,7 @@ gen_photo_page :: proc(ctx: ^Generator_Context, album: ^Album, photo_index: int,
     }
 
     if photo.species != .None {
-        fmt.wprintfln(writer, "<p>Species: {} — {}</p>", species_get_name(photo.species), species_get_latin_name(photo.species))
+        fmt.wprintfln(writer, "<p>Species: {} — <i>{}</i></p>", species_get_name(photo.species), species_get_latin_name(photo.species))
     }
 
     fmt.wprintln(writer, "</div>")
