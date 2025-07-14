@@ -181,6 +181,24 @@ site := Site {
             name = "Landscape",
             photos = {
                 {
+                    path = "public/photos/IMG_1340.jpg",
+                    date = { 12, .July, 2025 },
+                    location = "The Needles, Tasmania",
+                    alt_text = "",
+                },
+                {
+                    path = "public/photos/IMG_1245.jpg",
+                    date = { 12, .July, 2025 },
+                    location = "The Needles, Tasmania",
+                    alt_text = "",
+                },
+                {
+                    path = "public/photos/IMG_1281.jpg",
+                    date = { 12, .July, 2025 },
+                    location = "The Needles, Tasmania",
+                    alt_text = "",
+                },
+                {
                     path = "public/photos/IMG_5078.jpg",
                     date = { 23, .August, 2024 },
                     location = "The Needles, Tasmania",
